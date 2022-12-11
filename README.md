@@ -1,3 +1,4 @@
+View Link: https://www.kaggle.com/c/twitter-psychopathy-prediction
 # Description
 The  aim of the competition is to determine to what degree it's possible to predict people with a sufficiently high degree of Psychopathy based on Twitter usage and Linguistic Inquiry.
 
