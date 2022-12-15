@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Dec 11 17:30:03 2022
+
+@author: asligonulacar
+"""
+
+import pandas as pd 
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import missingno as msno
+from impyute.imputation.cs import mice
+
+df = pd.read_csv("/Users/asligonulacar/Desktop/kaggle/PersonalityData_ExternalVersion001.csv")
+with pd.option_context('display.max_rows', None,
+                        'display.max_columns', None,
+                        'display.precision', 3,
+                        ):
+    print(df.isna().sum())
+    print(df.dtypes)
+
+    
+# A lot of missing variables in Var1-Var100. 
+for i in df.keys()[:9]:
+    sns.histplot(x=i, data=df)
+    plt.show()
+
+# Prep for imputation.
+df['uid'] = df['uid'].astype('float64')
+df['Var14'] = df['Var14'].astype('float64')
+df['Var20'] = df['Var20'].astype('string')
+df['Var20'] = df['Var20'].astype('object')
+df[df['Var20']=='TRUE'] = 1
+df['Var20'] = df['Var20'].astype('float64')
+
+
+
+
+# MICE imputation, source paper available.
+mice_df = df.drop(['uid','psychopathy', 'machiavellianism', 'narcissism', 'openness',
+                   'conscientiousness', 'extraversion', 'agreeableness', 'neuroticism',
+                   'Var14', 'Var20'], axis=1)
+
+mice_df = pd.DataFrame(mice(mice_df.values), columns=mice_df.columns)
+mice_df[['uid','psychopathy', 'machiavellianism', 'narcissism', 'openness','conscientiousness', 'extraversion', 'agreeableness', 'neuroticism','Var14', 'Var20']] = df[['uid','psychopathy', 'machiavellianism', 'narcissism', 'openness','conscientiousness', 'extraversion', 'agreeableness', 'neuroticism','Var14', 'Var20']] 
